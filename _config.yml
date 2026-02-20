@@ -1,0 +1,21 @@
+# GitHub Pages Configuration
+title: "แดชบอร์ดรายได้จากการให้บริการ"
+description: "บริษัท ทีเอ็นทีไตเทียม จำกัด - แดชบอร์ดวิเคราะห์รายได้จากการให้บริการฟอกเลือดด้วยเครื่องไตเทียม"
+author: "Societas AI"
+url: "https://your-username.github.io"
+baseurl: "/service-revenue-dashboard"
+
+# Theme
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - package.json
+  - deploy-instructions.md
+  - git-commands.md

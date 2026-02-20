@@ -1,0 +1,25 @@
+{
+  "name": "service-revenue-dashboard",
+  "version": "1.0.0",
+  "description": "แดชบอร์ดรายได้จากการให้บริการ - บริษัท ทีเอ็นทีไตเทียม จำกัด",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "deploy": "gh-pages -d ."
+  },
+  "keywords": [
+    "dashboard",
+    "revenue",
+    "healthcare",
+    "dialysis",
+    "insurance",
+    "thailand"
+  ],
+  "author": "Societas AI",
+  "license": "MIT",
+  "homepage": "https://github.com/your-username/service-revenue-dashboard",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/service-revenue-dashboard.git"
+  }
+}
