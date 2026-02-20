@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แดชบอร์ดรายได้จากการให้บริการ - บริษัท ทีเอ็นทีไตเทียม จำกัด</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .header .period {
+            font-size: 1em;
+            opacity: 0.8;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .card-subtitle {
+            font-size: 0.85em;
+            color: #888;
+        }
+        
+        .charts-section {
+            padding: 30px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .chart-title {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-wrapper.pie {
+            height: 500px;
+        }
+        
+        .insurance-summary {
+            background: #e8f4fd;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        
+        .insurance-title {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .insurance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        
+        .insurance-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .insurance-type {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .insurance-amount {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .insurance-details {
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 3px;
+        }
+        
+        .insurance-percent {
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .data-table {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .table-title {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .amount {
+            text-align: right;
+            font-weight: 600;
+            color: #27ae60;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .summary-cards {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .charts-section {
+                padding: 20px;
+            }
+            
+            .chart-wrapper {
+                height: 300px;
+            }
+            
+            .insurance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>แดชบอร์ดรายได้จากการให้บริการ</h1>
+            <div class="subtitle">บริษัท ทีเอ็นทีไตเทียม จำกัด</div>
+            <div class="period">มกราคม 2569 (January 2026)</div>
+        </div>
+        
+        <div class="summary-cards">
+            <div class="card">
+                <div class="card-title">รายได้รวม</div>
+                <div class="card-value">698,692</div>
+                <div class="card-subtitle">บาท</div>
+            </div>
+            <div class="card">
+                <div class="card-title">จำนวนครั้งรวม</div>
+                <div class="card-value">572</div>
+                <div class="card-subtitle">ครั้ง</div>
+            </div>
+            <div class="card">
+                <div class="card-title">รายได้เฉลี่ย</div>
+                <div class="card-value">1,221</div>
+                <div class="card-subtitle">บาท/ครั้ง</div>
+            </div>
+            <div class="card">
+                <div class="card-title">ประเภทสิทธิ์</div>
+                <div class="card-value">5</div>
+                <div class="card-subtitle">ประเภท</div>
+            </div>
+        </div>
+        
+        <!-- ส่วนสรุปรายได้จากสิทธิประกัน -->
+        <div class="charts-section">
+            <div class="insurance-summary">
+                <div class="insurance-title">📊 สรุปรายได้จากการให้บริการสิทธิประกัน</div>
+                <div class="insurance-grid" id="insuranceGrid">
+                </div>
+            </div>
+        </div>
+        
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">การกระจายรายได้ตามประเภทสิทธิประกัน</div>
+                <div class="chart-wrapper pie">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">เปรียบเทียบจำนวนครั้งการให้บริการ</div>
+                <div class="chart-wrapper">
+                    <canvas id="serviceCountChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">เปรียบเทียบรายได้ตามรหัสบริการ</div>
+                <div class="chart-wrapper">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">อัตราค่าบริการต่อครั้งตามประเภทสิทธิ์</div>
+                <div class="chart-wrapper">
+                    <canvas id="rateChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="charts-section">
+            <div class="data-table">
+                <div class="table-title">รายละเอียดรายได้จากการให้บริการ</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>รหัสบริการ</th>
+                            <th>ประเภทสิทธิ์</th>
+                            <th>จำนวนครั้ง</th>
+                            <th>อัตรา/ครั้ง</th>
+                            <th>เลขที่ใบแจ้งหนี้</th>
+                            <th>เลขที่อ้างอิง</th>
+                            <th class="amount">จำนวนเงิน (บาท)</th>
+                            <th class="amount">สัดส่วน (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>รายงานสร้างเมื่อ: 20 กุมภาพันธ์ 2569 เวลา 14:03:15 | ข้อมูลช่วงวันที่: 1-31 มกราคม 2569</p>
+        </div>
+    </div>
+
+    <script>
+        // ข้อมูลบริการจากไฟล์ Excel ที่อัปโหลด พร้อมข้อมูลจำนวนครั้งและอัตราค่าบริการ
+        const serviceData = [
+            {
+                code: "P00001",
+                name: "ค่าบริการฟอกเลือดด้วยเครื่องไตเทียม (สปสช.)",
+                fundingSource: "สปสช.",
+                revenue: 361121.5,
+                invoice: "IV-20260200011",
+                serviceRef: "SV-202602005",
+                serviceCount: 322,
+                ratePerService: 1200,
+                color: "#3498db"
+            },
+            {
+                code: "P00002",
+                name: "ค่าบริการฟอกเลือดด้วยเครื่องไตเทียม (ราชการเบิกได้)",
+                fundingSource: "ราชการเบิกได้",
+                revenue: 173457.94,
+                invoice: "IV-20260200012",
+                serviceRef: "SV-202602004",
+                serviceCount: 116,
+                ratePerService: 1600,
+                color: "#e74c3c"
+            },
+            {
+                code: "P00007",
+                name: "ค่าบริการฟอกเลือดด้วยเครื่องไตเทียม (เงินสด/รัฐวิสาหกิจ)",
+                fundingSource: "เงินสด/รัฐวิสาหกิจ",
+                revenue: 20934.58,
+                invoice: "IV-20260200013",
+                serviceRef: "SV-202602003",
+                serviceCount: 14,
+                ratePerService: 1600,
+                color: "#f39c12"
+            },
+            {
+                code: "P00009",
+                name: "ค่าบริการฟอกเลือดด้วยเครื่องไตเทียม (อปท.)",
+                fundingSource: "อปท.",
+                revenue: 34392.52,
+                invoice: "IV-20260200014",
+                serviceRef: "SV-202602002",
+                serviceCount: 23,
+                ratePerService: 1600,
+                color: "#9b59b6"
+            },
+            {
+                code: "P00010",
+                name: "ค่าบริการฟอกเลือดด้วยเครื่องไตเทียม (ประกันสังคม)",
+                fundingSource: "ประกันสังคม",
+                revenue: 108785.05,
+                invoice: "IV-20260200015",
+                serviceRef: "SV-202602001",
+                serviceCount: 97,
+                ratePerService: 1200,
+                color: "#2ecc71"
+            }
+        ];
+
+        // ข้อมูลสิทธิประกัน - การจัดกลุ่มตามประเภทสิทธิ
+        const insuranceTypeData = [
+            {
+                type: "สิทธิ์รัฐ (สปสช.)",
+                services: ["P00001"],
+                revenue: 361121.5,
+                percentage: 51.7,
+                color: "#3498db",
+                serviceCount: 322,
+                ratePerService: 1200
+            },
+            {
+                type: "สิทธิ์ราชการ",
+                services: ["P00002"],
+                revenue: 173457.94,
+                percentage: 24.8,
+                color: "#e74c3c",
+                serviceCount: 116,
+                ratePerService: 1600
+            },
+            {
+                type: "สิทธิ์ประกันสังคม",
+                services: ["P00010"],
+                revenue: 108785.05,
+                percentage: 15.6,
+                color: "#2ecc71",
+                serviceCount: 97,
+                ratePerService: 1200
+            },
+            {
+                type: "สิทธิ์อปท.",
+                services: ["P00009"],
+                revenue: 34392.52,
+                percentage: 4.9,
+                color: "#9b59b6",
+                serviceCount: 23,
+                ratePerService: 1600
+            },
+            {
+                type: "สิทธิ์เงินสด/รัฐวิสาหกิจ",
+                services: ["P00007"],
+                revenue: 20934.58,
+                percentage: 3.0,
+                color: "#f39c12",
+                serviceCount: 14,
+                ratePerService: 1600
+            }
+        ];
+
+        const totalRevenue = serviceData.reduce((sum, service) => sum + service.revenue, 0);
+        const totalServiceCount = serviceData.reduce((sum, service) => sum + service.serviceCount, 0);
+
+        // สร้างส่วนสรุปสิทธิประกัน
+        function createInsuranceSummary() {
+            const grid = document.getElementById('insuranceGrid');
+            insuranceTypeData.forEach(insurance => {
+                const item = document.createElement('div');
+                item.className = 'insurance-item';
+                item.style.borderTop = `3px solid ${insurance.color}`;
+                item.innerHTML = `
+                    <div class="insurance-type">${insurance.type}</div>
+                    <div class="insurance-amount">${insurance.revenue.toLocaleString('th-TH')} บาท</div>
+                    <div class="insurance-details">${insurance.serviceCount} ครั้ง × ${insurance.ratePerService.toLocaleString('th-TH')} บาท</div>
+                    <div class="insurance-percent">${insurance.percentage}% ของรายได้รวม</div>
+                `;
+                grid.appendChild(item);
+            });
+        }
+
+        // สร้างตารางข้อมูล
+        function createDataTable() {
+            const tbody = document.getElementById('dataTableBody');
+            serviceData.forEach(service => {
+                const percentage = ((service.revenue / totalRevenue) * 100).toFixed(1);
+                const row = `
+                    <tr>
+                        <td>${service.code}</td>
+                        <td>${service.fundingSource}</td>
+                        <td class="amount">${service.serviceCount}</td>
+                        <td class="amount">${service.ratePerService.toLocaleString('th-TH')}</td>
+                        <td>${service.invoice}</td>
+                        <td>${service.serviceRef}</td>
+                        <td class="amount">${service.revenue.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                        <td class="amount">${percentage}%</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // กราฟวงกลม - สิทธิประกัน
+        function createPieChart() {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: insuranceTypeData.map(insurance => insurance.type),
+                    datasets: [{
+                        data: insuranceTypeData.map(insurance => insurance.revenue),
+                        backgroundColor: insuranceTypeData.map(insurance => insurance.color),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 0"color:#005CC5">20,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const insurance = insuranceTypeData[context.dataIndex];
+                                    const percentage = ((context.parsed / totalRevenue) * 100).toFixed(1);
+                                    return [
+                                        `${context.label}: ${context.parsed.toLocaleString('th-TH')} บาท (${percentage}%)`,
+                                        `จำนวนครั้ง: ${insurance.serviceCount} ครั้ง`,
+                                        `อัตรา: ${insurance.ratePerService.toLocaleString('th-TH')} บาท/ครั้ง`
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // กราฟจำนวนครั้งการให้บริการ
+        function createServiceCountChart() {
+            const ctx = document.getElementById('serviceCountChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: insuranceTypeData.map(insurance => insurance.type),
+                    datasets: [{
+                        label: 'จำนวนครั้ง',
+                        data: insuranceTypeData.map(insurance => insurance.serviceCount),
+                        backgroundColor: insuranceTypeData.map(insurance => insurance.color),
+                        borderColor: insuranceTypeData.map(insurance => insurance.color),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const insurance = insuranceTypeData[context.dataIndex];
+                                    const percentage = ((insurance.serviceCount / totalServiceCount) * 100).toFixed(1);
+                                    return [
+                                        `จำนวนครั้ง: ${context.parsed.y} ครั้ง (${percentage}%)`,
+                                        `อัตรา: ${insurance.ratePerService.toLocaleString('th-TH')} บาท/ครั้ง`,
+                                        `รายได้: ${insurance.revenue.toLocaleString('th-TH')} บาท`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + ' ครั้ง';
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // กราฟแท่งแนวตั้ง - รหัสบริการ
+        function createBarChart() {
+            const ctx = document.getElementById('barChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: serviceData.map(service => service.code),
+                    datasets: [{
+                        label: 'รายได้ (บาท)',
+                        data: serviceData.map(service => service.revenue),
+                        backgroundColor: serviceData.map(service => service.color),
+                        borderColor: serviceData.map(service => service.color),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const service = serviceData[context.dataIndex];
+                                    return [
+                                        `รายได้: ${context.parsed.y.toLocaleString('th-TH')} บาท`,
+                                        `จำนวนครั้ง: ${service.serviceCount} ครั้ง`,
+                                        `อัตรา: ${service.ratePerService.toLocaleString('th-TH')} บาท/ครั้ง`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('th-TH');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // กราฟอัตราค่าบริการ
+        function createRateChart() {
+            const ctx = document.getElementById('rateChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: insuranceTypeData.map(insurance => insurance.type),
+                    datasets: [{
+                        label: 'อัตราค่าบริการ (บาท/ครั้ง)',
+                        data: insuranceTypeData.map(insurance => insurance.ratePerService),
+                        backgroundColor: insuranceTypeData.map(insurance => insurance.color),
+                        borderColor: insuranceTypeData.map(insurance => insurance.color),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const insurance = insuranceTypeData[context.dataIndex];
+                                    return [
+                                        `อัตรา: ${context.parsed.y.toLocaleString('th-TH')} บาท/ครั้ง`,
+                                        `จำนวนครั้ง: ${insurance.serviceCount} ครั้ง`,
+                                        `รายได้รวม: ${insurance.revenue.toLocaleString('th-TH')} บาท`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('th-TH') + ' บาท';
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // เริ่มต้นแอปพลิเคชัน
+        document.addEventListener('DOMContentLoaded', function() {
+            createInsuranceSummary();
+            createDataTable();
+            createPieChart();
+            createServiceCountChart();
+            createBarChart();
+            createRateChart();
+        });
+    </script>
+</body>
+</html>
